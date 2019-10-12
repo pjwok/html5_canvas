@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <p></p>
+    <script src="initCanvas.js"></script>
+    <script>
+        context.save()
+        
+        context.fillStyle='#0000ff'
+        context.fillRect(50,50,100,100)
+        
+        context.fillStyle='#ff0000'
+        context.fillRect(100,100,100,100)
+        
+        context.restore()
+
+        context.fillStyle='#00ff00'
+        context.fillRect(150,150,100,100)
+
+        console.log(canvas.get(0))
+        var dataURL = canvas.get(0).toDataURL()
+        console.log(dataURL)
+
+        var img = $('<img></img>').attr('src', dataURL)
+        $($('p').get(0)).append(img)
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.min.js"></script>
+    <script>
+        $(function($){
+            var canvas = $('#canvas'),
+                context = canvas.get(0).getContext('2d')
+            context.fillStyle = '#ff00ff'
+            context.save()//保存当前状态 即保存颜色
+            context.fillRect(50, 50, 100, 100)
+            context.fillStyle = '#0000ff'
+            context.translate(50,100)
+            context.fillRect(200, 50, 100, 100)
+            context.restore()
+            context.fillRect(350, 50, 100, 100)
+        })
+    </script>
+</head>
+<body>
+    <canvas id="canvas" width="400" height="400" style="border: 2px solid #ddd;"></canvas>
+
+</body>
+</html>

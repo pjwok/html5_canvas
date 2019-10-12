@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="https://cdn.bootcss.com/minireset.css/0.0.2/minireset.css" rel="stylesheet">
+    <style>
+        body{
+            background: #c1c1c1;
+        }
+        #canvas {
+            background: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <img src="a.jpg" alt="">
+    <script>
+        var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d'),
+            img = new Image()
+        img.src = 'a.jpg'
+        img.onload = function () {
+            context.drawImage(img, 0,0,100,100)
+        }
+
+        context.shadowBlur=20
+        context.shadowColor='#000000'
+        context.shadowOffsetX=10
+        context.shadowOffsetY=10
+    </script>
+</body>
+
+</html>

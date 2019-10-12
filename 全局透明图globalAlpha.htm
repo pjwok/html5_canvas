@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #canvas{
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="initCanvas.js"></script>
+    <script>
+        context.fillStyle = "rgb(63, 169, 245)"
+        context.fillRect(50,50,100,100)
+
+        context.globalCompositeOperation = 'source-over'//源在画布(目标)之上
+        context.globalCompositeOperation = 'destination-over'//画布(目标)在源之上
+        context.globalCompositeOperation = 'source-atop'//显示源和画布交界处 其他隐藏 源在画布下 交界处为源
+        context.globalCompositeOperation = 'destination-atop'//显示源和画布交界处 其他隐藏 源在画布上 交界处为画布
+        context.globalCompositeOperation = 'source-in'//显示源和画布交界处 其他隐藏 显示源
+        context.globalCompositeOperation = 'destination-in'//显示源和画布交界处 其他隐藏 显示画布
+        context.globalCompositeOperation = 'destination-out'//不显示源和画布交界处 显示画布
+        context.globalCompositeOperation = 'source-out'//不显示源和画布交界处 显示源
+        context.globalCompositeOperation = 'lighter'//交界处颜色叠加 其他都显示
+        context.globalCompositeOperation = 'xor'//交界处颜色透明 其他都显示
+        context.globalCompositeOperation = 'copy'//只复制源 其他不显示 与顺序无关
+
+        // context.globalAlpha=0.5
+        context.fillStyle = 'rgb(255,123,172)'
+        context.fillRect(100,100,100,100)
+        
+    </script>
+</body>
+</html>

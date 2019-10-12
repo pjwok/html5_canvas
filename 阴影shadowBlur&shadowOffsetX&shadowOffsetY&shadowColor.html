@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="initCanvas.js"></script>
+    <script>
+        context.shadowBlur = 20
+        context.shadowColor ='rgb(0,0,0)'
+        context.shadowOffsetX = 100
+        context.shadowOffsetY = 100
+        context.fillStyle='rgba(255,0,0,1)'
+        context.fillRect(50,50,100,100)
+    </script>
+</body>
+</html>

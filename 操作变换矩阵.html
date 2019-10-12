@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    
+</head>
+
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="initCanvas.js"></script>
+    <script>
+            context.transform(1, 0, 0, 1, 250, 150)
+            context.fillStyle = '#ffffff'
+            context.fillRect(0, 0, 100, 100)
+            context.setTransform(1,0,0,1,0,0)
+            var xScale = Math.cos(0.7854),
+                ySkew = -Math.sin(0.7854),
+                xSkew = Math.sin(0.7845),
+                yScale = Math.cos(0.7854),
+                xTrans = 200,
+                yTrans = 200
+            context.transform(xScale,ySkew, xSkew, yScale,xTrans, yTrans)
+            context.fillRect(-50, -50, 100,100)
+    
+        </script>
+</body>
+
+</html>

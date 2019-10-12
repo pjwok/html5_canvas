@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script src="initCanvas.js"></script>
+    <script>
+        var lineargradient = context.createLinearGradient(0,0,0,canvas.height())
+        lineargradient.addColorStop(0, "#000000")
+        lineargradient.addColorStop(1, "#ffffff")
+
+        var radialGradient = context.createRadialGradient(canvas.width()/2,canvas.height()/2,0,canvas.width()/2,canvas.height()/2,200);
+        radialGradient.addColorStop(0, 'rgb(0,0,0)')
+        radialGradient.addColorStop(1, 'rgb(150,150,150)')
+
+        context.fillStyle=radialGradient
+        context.fillRect(0,0,canvas.width(),canvas.height())
+    </script>
+</body>
+</html>
