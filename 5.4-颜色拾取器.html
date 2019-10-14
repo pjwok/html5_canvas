@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="box" style="width:400px; height:400px;"></div>
+    <script src="initCanvas.js"></script>
+    <script>
+        $(function ($) {
+            console.log(canvas)
+            var img = new Image()
+            img.src = 'a.jpg'
+
+            // context.translate(100, 100)
+            // context.rotate(45 * Math.PI / 180)
+
+            img.onload = function () {
+                context.drawImage(img, 0, 0)
+            }
+            canvas.click(function (e) {
+                var canvasOffset = canvas.offset()
+                var canvasX = Math.floor(e.pageX - canvasOffset.left)
+                var canvasY = Math.floor(e.pageY - canvasOffset.top)
+                var imgdata = context.getImageData(canvasX, canvasY, 1, 1)
+                var pixel = imgdata.data
+                var r = pixel[0]
+                var g = pixel[1]
+                var b = pixel[2]
+                var a = pixel[3]
+                var pixelColor = 'rgba(' + r + ',' + g + ',' + b + ',' + a + ')'
+
+                $('#canvas').css({ 'backgroundColor': pixelColor })
+
+            })
+        })
+
+
+
+
+    </script>
+
+</body>
+
+</html>

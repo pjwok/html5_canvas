@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div id="box" style="width:400px; height:400px;"></div>
+    <script src="initCanvas.js"></script>
+    <script>
+        $(function ($) {
+            var imgData = context.createImageData(200, 200)
+            var pixel = imgData.data
+            var totalPixel = imgData.width * imgData.height
+
+            for (var i = 0; i < totalPixel; i++) {
+                pixel[i * 4] = Math.floor(Math.random()*255)
+                pixel[i * 4 + 1] = Math.floor(Math.random()*255)
+                pixel[i * 4 + 2] = Math.floor(Math.random()*255)
+                pixel[i * 4 + 3] = Math.floor(Math.random()*255)
+            }
+            context.putImageData(imgData, 0, 0)
+        })
+
+
+
+
+    </script>
+
+</body>
+
+</html>
