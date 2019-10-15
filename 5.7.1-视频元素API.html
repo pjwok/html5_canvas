@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <video controls id="app">
+        <source src="3.mp4" type="video/mp4"/>
+    </video>
+    <div>
+        <button id="play">play</button>
+        <button id="stop">stop</button>
+    </div>
+    <script src="jq.js"></script>
+    <script>
+        $('#play').click(function(){
+            $('#app').get(0).play()
+        })
+        $('#stop').click(function(){
+            $('#app').get(0).pause()
+        })
+    </script>
+</body>
+</html>

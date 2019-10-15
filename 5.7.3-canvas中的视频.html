@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="700" height="394">
+        <video controls id="myvideo">
+            <source src="3.mp4" type="video/mp4" />
+        </video>
+    </canvas>
+    <video controls id="myvideo">
+            <source src="3.mp4" type="video/mp4" />
+        </video>
+    <div>
+        <button id="play">play</button>
+        <button id="stop">stop</button>
+    </div>
+    <script src="jq.js"></script>
+    <script>
+        $(function ($) {
+
+            var canvas = $('#canvas')
+            var context = canvas.get(0).getContext('2d')
+
+            $('#play').click(function () {
+                $('#myvideo').get(0).play()
+            })
+            $('#stop').click(function () {
+                $('#myvideo').get(0).pause()
+            })
+            $(myvideo).bind('play', function () {
+                drawCanvas()
+            })
+            function drawCanvas() {
+                if ($('#myvideo').get(0).paused || $('#myvideo').get(0).ended) {
+                    return false
+                }
+                context.drawImage($('#myvideo').get(0), 0, 0, 700, 394)
+
+                var imageData = context.getImageData(0, 0, canvas.width(), canvas.height())
+                var pixels = imageData.data
+
+                context.clearRect(0, 0, canvas.width(), canvas.height())
+                var tilsRow = 28
+                var tilsCol = 50
+
+                var tilsWidth = imageData.width / tilsCol
+                var tilsHeight = imageData.height / tilsRow
+                console.log(tilsWidth, tilsHeight)
+
+                for (var row = 0; row < tilsRow; row++) {
+                    for (var col = 0; col < tilsCol; col++) {
+                        var x = Math.floor(col * tilsWidth + tilsWidth / 2)
+                        var y = Math.floor(row * tilsHeight + tilsHeight / 2)
+                        var pos = x * 4 + y * imageData.width * 4
+
+                        var r = pixels[pos]
+                        var g = pixels[pos + 1]
+                        var b = pixels[pos + 2]
+
+                        context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')'
+                        // context.fillRect(x - tilsWidth / 2, y - tilsHeight / 2, tilsWidth, tilsHeight)
+                        context.beginPath()
+                        context.arc(x,y,tilsWidth/2,0,Math.PI*2,false)
+                        context.closePath()
+                        context.fill()
+                    }
+                }
+                setTimeout(drawCanvas, 1000/60)
+            }
+        })
+    </script>
+</body>
+
+</html>
