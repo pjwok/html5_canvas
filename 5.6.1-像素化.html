@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <script src="initCanvas.js"></script>
+    <script>
+        var image = new Image()
+        image.src = 'a.jpg'
+        image.onload = function () {
+            context.drawImage(image, 0, 0, 100, 100, 0, 0, 400, 400)
+
+            var imagedata = context.getImageData(0, 0, canvas.width(), canvas.height())
+            var pixels = imagedata.data
+
+            context.clearRect(0, 0, canvas.width(), canvas.height())
+
+            var tilsCols = 10
+            var tilsRows = 10
+
+            var tilsWidth = imagedata.width / tilsCols
+            var tilsHeight = imagedata.height / tilsRows
+
+            for (var row = 0; row < tilsRows; row++) {
+                for (var col = 0; col < tilsCols; col++) {
+                    //取每个马赛克的中心位置
+                    var x = Math.floor(col * tilsWidth + tilsWidth / 2)
+                    var y = Math.floor(row * tilsHeight + tilsHeight / 2)
+                    //确定在数组中的位置
+                    var pos = y * imagedata.height * 4 + x * 4
+
+                    var r = pixels[pos]
+                    var g = pixels[pos + 1]
+                    var b = pixels[pos + 2]
+
+                    context.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')'
+                    // context.fillRect(x - tilsWidth / 2, y - tilsHeight / 2, tilsWidth, tilsHeight)
+                    context.beginPath()
+                    context.arc(x, y, tilsWidth / 2, 0, Math.PI * 2, false)
+                    context.closePath()
+                    context.fill()
+
+
+                }
+            }
+
+        }
+    </script>
+</body>
+
+</html>

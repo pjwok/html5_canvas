@@ -15,38 +15,45 @@
     <script src="initCanvas.js"></script>
     <script>
         $(function ($) {
-            var imgData = context.createImageData(200, 200)
+            var imgData = context.createImageData(400, 400)
             var pixel = imgData.data
 
             //马赛克的个数
-            var numTileRows = 4
-            var numTileCols = 4
+            var numTileRows = 20
+            var numTileCols = 20
 
             //每个马赛克的尺寸
             var tileWidth = imgData.width / numTileCols//50
             var tileHeight = imgData.height / numTileRows//50
 
             //遍历每个马赛克
-            for (var r = 0; r < numTileRows; r++) {
-                for (var c = 0; c < numTileCols; c++) {
+            for (var row = 0; row < numTileRows; row++) {
+                for (var col = 0; col < numTileCols; col++) {
 
                     var r = Math.floor(Math.random() * 255)
                     var g = Math.floor(Math.random() * 255)
                     var b = Math.floor(Math.random() * 255)
                     var a = Math.floor(Math.random() * 255)
-                    
+                    console.log(r,g,b,a)
+
                     for (var tr = 0; tr < tileHeight; tr++) {
                         for (var tc = 0; tc < tileWidth; tc++) {
-                        
-                            var trueX = (c * tileWidth) + tc//当前块左边缘 tc左边缘开始向右的每个像素点
-                            var trueY = (r * tileHeight) + tr//当前块上边缘 tr上边缘开始向下的每个像素点
-                            
+
+                            var trueX = (col * tileWidth) + tc//当前块左边缘 tc左边缘开始向右的每个像素点
+                            var trueY = (row * tileHeight) + tr//当前块上边缘 tr上边缘开始向下的每个像素点
+
+                            var pos = trueX * 4 + (imgData.height * trueY * 4)
                             //r的位置
-                            pixel[trueX + imgData.width*trueY]
+                            pixel[pos] = r
+                            pixel[pos + 1] = g
+                            pixel[pos + 2] = b
+                            pixel[pos + 3] = a
+
                         }
                     }
                 }
             }
+            context.putImageData(imgData, 0, 0)
         })
 
 
