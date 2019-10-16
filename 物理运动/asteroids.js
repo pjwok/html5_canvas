@@ -71,24 +71,66 @@ $(function () {
         var asteroidslength = asteroids.length
         for (var i = 0; i < asteroidslength; i++) {
             var el = asteroids[i]
-            if (Math.abs(el.vx) < 10) {
+
+
+            //检测碰撞
+            for (var j = i + 1; j < asteroidslength; j++) {
+                var elb = asteroids[j]
+
+                var dx = elb.x - el.x
+                var dy = elb.y - el.y
+                var distance = Math.sqrt(dx * dx + dy * dy)
+                if (distance < el.radius + elb.radius) {
+                    //弹开物体
+                    //通过tan来求出两边的夹角
+                    var angle = Math.atan2(dy, dx);//计算两个圆之间的角度
+                    var sine = Math.sin(angle)//对边与斜边的比值
+                    var cosine = Math.cos(angle)//邻边与斜边的比值
+
+
+                    //把圆的位置和速度进行旋转
+                    var x = 0
+                    var y = 0
+                    var xb = dx * cosine + dy * sine
+                    var yb = dy * cosine - dx * sine
+
+                    var vx = el.vx * cosine + el.vy * sine
+                    var vy = el.vy * cosine - el.vx * sine
+
+                    var vxb = elb.vx * cosine + elb.vy * sine
+                    var vyb = elb.vy * cosine - elb.vx * sine
+
+                    vx *= -1
+                    vxb *= -1
+                    
+                    xb = x +(el.radius+elb.radius)
+
+                    el.x = el.x + (x*cosine -y*sine)
+                    el.y = el.y + (y*cosine + x*sine)
+
+                    elb.x = el.x + (xb*cosine - yb *sine)
+                    elb.y = el.y + (yb*cosine + xb *sine)
+
+                    el.vx = vx*cosine - vy *sine
+                    el.vy = vy*cosine + vx *sine
+
+                    elb.vx = vxb * cosine - vyb *sine
+                    elb.vy = vyb * cosine + vxb *sine
+
+                }
+            }
+
+
+
+            if (Math.abs(el.vx) < 5) {
                 el.vx += el.ax
             }
-            if (Math.abs(el.vx) < 10) {
+            if (Math.abs(el.vx) < 5) {
 
                 el.vy += el.ay
             }
-            
-            if(Math.abs(el.vx)>0.1){
-                el.vx*=0.9
-            } else {
-                el.vx = 0
-            }
-            if(Math.abs(el.vy)>0.1){
-                el.vy*=0.9
-            } else {
-                el.vy = 0
-            }
+
+
             el.x += el.vx
             el.y += el.vy
             //判断是否出界
