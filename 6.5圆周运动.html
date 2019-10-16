@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div>
+        <button id="start">start</button>
+        <button id="stop">stop</button>
+    </div>
+    <script src="jq.js"></script>
+    <script src="initCanvas.js"></script>
+    <script src="shape.js"></script>
+    <script>
+        var shapes = []
+        for (var i = 0; i < 10; i++) {
+            var x = Math.random() * canvas.width,
+                y = Math.random() * canvas.height,
+                width = height = Math.random() * 20
+            shapes.push(new Shape(x, y, width, height))
+        }
+
+        function animate() {
+            context.clearRect(0, 0, canvas.width, canvas.height)
+
+            for (var i = 0; i < shapes.length; i++) {
+                var x = shapes[i].x + Math.cos(shapes[i].angle * Math.PI / 180) * shapes[i].radius
+                var y = shapes[i].y + Math.sin(shapes[i].angle * Math.PI / 180) * shapes[i].radius
+                shapes[i].angle += 5
+                // if(shapes[i].angle >=360){
+                //     shapes[i].angle = 0
+                // }
+
+                context.fillRect(x, y, shapes[i].width, shapes[i].height)
+            }
+            if(play){
+                setTimeout(animate, 1000/60)
+            }
+        }
+        animate()
+
+    </script>
+</body>
+
+</html>

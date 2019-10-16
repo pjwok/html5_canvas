@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <canvas id="canvas" width="400" height="400"></canvas>
+    <div>
+        <button id="start">start</button>
+        <button id="stop">stop</button>
+    </div>
+    <script src="jq.js"></script>
+    <script src="shape.js"></script>
+    <script>
+        var canvas = document.getElementById('canvas'),
+            context = canvas.getContext('2d'),
+            play = true,
+            start = document.getElementById('start'),
+            stop = document.getElementById('stop')
+        //创建用于控制动画的按钮
+        $(start).hide().click(function () {
+            $(this).hide()
+            $(stop).show()
+            play = true
+            animate()
+        })
+        $(stop).click(function () {
+            $(this).hide()
+            $(start).show()
+            play = false
+        })
+
+        //运动的正方形
+        var shapes = []
+        for (var i = 0; i < 10; i++) {
+            var x = Math.random() * 400
+            var y = Math.random() * 400
+            var width = height = Math.random() * 100
+            shapes.push(new Shape(x, y, width, height))
+
+        }
+        var dx = Math.random() > 0.5? 1:-1
+        function animate() {
+            var dy = Math.random() > 0.5? 1:-1
+            if (play) {
+                context.clearRect(0,0,canvas.width, canvas.height)
+                
+                for (var j = 0; j < shapes.length; j++) {
+                    context.fillRect(shapes[j].x, shapes[j].y, shapes[j].width, shapes[j].height)
+                   
+                    if(shapes[j].x + shapes[j].width/2 > canvas.width 
+                        || shapes[j].x < 0){
+                            console.log(1)
+                        dx = -dx
+                    }
+                    shapes[j].x+=dx
+                    shapes[j].y+=dy
+                }
+            }
+
+            setTimeout(animate, 1000 / 60)
+        }
+        animate()
+    </script>
+</body>
+
+</html>
