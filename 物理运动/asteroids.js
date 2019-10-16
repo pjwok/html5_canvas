@@ -78,6 +78,17 @@ $(function () {
 
                 el.vy += el.ay
             }
+            
+            if(Math.abs(el.vx)>0.1){
+                el.vx*=0.9
+            } else {
+                el.vx = 0
+            }
+            if(Math.abs(el.vy)>0.1){
+                el.vy*=0.9
+            } else {
+                el.vy = 0
+            }
             el.x += el.vx
             el.y += el.vy
             //判断是否出界
