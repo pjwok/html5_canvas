@@ -32,10 +32,12 @@ $(function () {
     })
 
     //小行星对象
-    function Asteroid(x, y, radius, vx, vy, ax, ay) {
+    function Asteroid(x, y, radius, mass, vx, vy, ax, ay) {
         this.x = x
         this.y = y
         this.radius = radius
+        //质量属性
+        this.mass = mass
 
         //x, y轴上的速率
         this.vx = vx
@@ -47,13 +49,17 @@ $(function () {
     }
 
     var asteroids = [],
-        numOfAsteroids = 10//小行星数量
+        numOfAsteroids = 100//小行星数量
 
     for (var i = 0; i < numOfAsteroids; i++) {
         //创建小行星
         var x = 20 + (Math.random() * (canvasWidth - 40))
         var y = 20 + (Math.random() * (canvasHeight - 40))
-        var radius = 5 + Math.random() * 10
+        // var radius = 30
+        var radius = 5 + Math.random() * 20
+
+        //添加质量
+        var mass = radius / 2
 
         var vx = Math.random() * 4 - 2
         var vy = Math.random() * 4 - 2
@@ -61,7 +67,7 @@ $(function () {
         var ax = Math.random() * 0.2 - 0.1
         var ay = Math.random() * 0.2 - 0.1
 
-        asteroids.push(new Asteroid(x, y, radius, vx, vy, ax, ay))
+        asteroids.push(new Asteroid(x, y, radius, mass, vx, vy, ax, ay))
     }
 
     function animate() {
@@ -100,22 +106,27 @@ $(function () {
                     var vxb = elb.vx * cosine + elb.vy * sine
                     var vyb = elb.vy * cosine - elb.vx * sine
 
-                    vx *= -1
-                    vxb *= -1
-                    
-                    xb = x +(el.radius+elb.radius)
+                    //反向改变小行星的位置和速度
+                    // vx *= -1
+                    // vxb *= -1
+                    var vTotal = vx - vxb
+                    vx = ((el.mass - elb.mass) * vx + 2 * elb.mass * vxb) / (el.mass + elb.mass)
+                    vxb = vTotal + vx
+                    //需要让小行星分离确保不黏在一起
+                    xb = x + (el.radius + elb.radius)
+                    //旋转到原来所在位置 使用新的速度
+                    el.x = el.x + (x * cosine - y * sine)
+                    el.y = el.y + (y * cosine + x * sine)
 
-                    el.x = el.x + (x*cosine -y*sine)
-                    el.y = el.y + (y*cosine + x*sine)
+                    elb.x = el.x + (xb * cosine - yb * sine)
+                    elb.y = el.y + (yb * cosine + xb * sine)
 
-                    elb.x = el.x + (xb*cosine - yb *sine)
-                    elb.y = el.y + (yb*cosine + xb *sine)
+                    el.vx = vx * cosine - vy * sine
+                    el.vy = vy * cosine + vx * sine
 
-                    el.vx = vx*cosine - vy *sine
-                    el.vy = vy*cosine + vx *sine
+                    elb.vx = vxb * cosine - vyb * sine
+                    elb.vy = vyb * cosine + vxb * sine
 
-                    elb.vx = vxb * cosine - vyb *sine
-                    elb.vy = vyb * cosine + vxb *sine
 
                 }
             }
