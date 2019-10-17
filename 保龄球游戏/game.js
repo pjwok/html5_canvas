@@ -5,6 +5,15 @@ $(function ($) {
     var canvasWidth = canvas.width()
     var canvasHeight = canvas.height()
 
+    //游戏盘面的属性
+    
+    var platformX, //平台原点
+        platformY, 
+        platformOuterRadius, //整个平台区域
+        platformInnerRadius//放置小行星的区域
+    
+    
+
     //是否开始游戏
     var playGame
 
@@ -36,8 +45,15 @@ $(function ($) {
 
     function startGame() {
         playGame = false
+        //初始化游戏平台
+        platformX = canvasWidth /2
+        platformY = 150
+        platformOuterRadius = 100
+        platformInnerRadius = 75
+
         animate()
     }
+
     //初始化游戏
     function init() {
 
@@ -48,7 +64,11 @@ $(function ($) {
         context.clearRect(0, 0, canvasWidth, canvasHeight)
 
         //主要实现逻辑
-
+        context.fillStyle = 'rgb(100,100,100)'
+        context.beginPath()
+        context.arc(platformX, platformY, platformOuterRadius, 0, Math.PI*2, true)
+        context.closePath()
+        context.fill()
 
 
         if (playGame) {
