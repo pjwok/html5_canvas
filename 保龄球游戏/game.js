@@ -147,7 +147,7 @@ $(function ($) {
         context.fill()
 
         //绘制小行星
-        context.fillStyle='rbg(255,255,255)'
+        context.fillStyle='rgb(255,255,255)'
         var asteroidsLength = asteroids.length
         for(var i =0; i< asteroidsLength;i++){
             
