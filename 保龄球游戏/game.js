@@ -71,7 +71,7 @@ $(function ($) {
     uiStats.show()//显示统计信息
 
     function startGame() {
-        playGame = false
+        playGame = true
         //初始化游戏平台
         platformX = canvasWidth / 2
         platformY = 150
@@ -116,28 +116,28 @@ $(function ($) {
         }
         //玩家使用的小行星
         var pRadius = 15
-        var pMass = 10
+        var pMass = 100
         var pFriction = 0.97
         playerOriginalX = canvasWidth / 2
         playerOriginalY = canvasHeight - 150
-        player = new Asteroid(playerOriginalX,playerOriginalY,pRadius, pMass,pFriction)
+        player = new Asteroid(playerOriginalX, playerOriginalY, pRadius, pMass, pFriction)
         player.player = true
         asteroids.push(player)
 
-        uiRemaining.html(asteroids.length-1)//初始化剩余小行星个数
+        uiRemaining.html(asteroids.length - 1)//初始化剩余小行星个数
 
         animate()
     }
 
     //初始化游戏
     function init() {
-        
+
     }
 
     //循环动画
     function animate() {
         context.clearRect(0, 0, canvasWidth, canvasHeight)
-
+        player.y -= 10
         //主要实现逻辑
         //绘制平台
         context.fillStyle = 'rgb(100,100,100)'
@@ -146,19 +146,93 @@ $(function ($) {
         context.closePath()
         context.fill()
 
-        //绘制小行星
-        context.fillStyle='rgb(255,255,255)'
-        var asteroidsLength = asteroids.length
-        for(var i =0; i< asteroidsLength;i++){
-            
-            var temAsteroid = asteroids[i]
 
-            // for(var j = i+1; j< asteroidsLength; j++){
-            //     var temAsteroidB = asteroids[j]
-            // }
-            console.log(temAsteroid.x, temAsteroid.y, temAsteroid.radius)
+
+
+
+
+        //绘制小行星
+        context.fillStyle = 'rgb(255,255,255)'
+        var asteroidsLength = asteroids.length
+        for (var i = 0; i < asteroidsLength; i++) {
+
+            var temAsteroid = asteroids[i]
+            //计算新位置
+            temAsteroid.x += temAsteroid.vx
+            temAsteroid.y += temAsteroid.vy
+            //摩擦力
+            if (Math.abs(temAsteroid.vx) > 0.1) {
+                temAsteroid.vx *= temAsteroid.friction
+            } else {
+                temAsteroid.vx = 0
+            }
+
+            if (Math.abs(temAsteroid.vy) > 0.1) {
+                temAsteroid.vy *= temAsteroid.friction
+            } else {
+                temAsteroid.vy = 0
+            }
+
+            for (var j = i + 1; j < asteroidsLength; j++) {
+                var temAsteroidB = asteroids[j]
+                // 碰撞检测代码
+                var dx = temAsteroidB.x - temAsteroid.x;
+                var dy = temAsteroidB.y - temAsteroid.y;
+                var distance = Math.sqrt((dx * dx) + dy * dy)
+                if (distance < temAsteroid.radius + temAsteroidB.radius) {
+                    //距离小于两个球的半径 说明碰撞了
+                    var angle = Math.atan2(dy, dx)//计算两个球之间连线与水平位置的夹角
+
+                    //后续会用到 先计算出来
+                    var sine = Math.sin(angle)
+                    var cosine = Math.cos(angle)
+
+                    // 旋转小行星的位置
+                    var x = 0
+                    var y = 0
+
+                    //旋转小行星B的位置
+                    var xb = dx * cosine + dy * sine
+                    var yb = dy * cosine - dx * sine
+
+                    //旋转小行星的速度
+                    var vx = temAsteroid.vx * cosine + temAsteroid.vy * sine
+                    var vy = temAsteroid.vy * cosine - temAsteroid.vx * sine
+
+                    //旋转小行星B的速度
+                    var vxb = temAsteroidB.vx * cosine + temAsteroidB.vy * sine
+                    var vyb = temAsteroidB.vy * cosine - temAsteroidB.vx * sine
+
+                    //保持动量
+                    var vTotal = vx - vxb
+                    vx = ((temAsteroid.mass - temAsteroidB.mass) * vx + 2 * temAsteroidB.mass * vxb) / (temAsteroidB.mass + temAsteroid.mass)
+                    vxb = vTotal + vx
+
+                    //将小行星分开
+                    xb = x + (temAsteroidB.radius + temAsteroid.radius)
+
+                    //转回小行星的位置
+                    temAsteroid.x = temAsteroid.x + (x * cosine - y * sine)
+                    temAsteroid.y = temAsteroid.y + (y * cosine + x * sine)
+                    //转回小行星B的位置
+                    temAsteroidB.x = temAsteroid.x + (xb * cosine - yb * sine)
+                    temAsteroidB.y = temAsteroid.y + (yb * cosine + xb * sine)
+
+                    //转回小行星的速度
+                    temAsteroid.vx = vx * cosine - vy * sine
+                    temAsteroid.vy = vy * cosine + vx * sine
+
+                    //转回小行星B的速度
+                    temAsteroidB.vx = vxb * cosine - vyb * sine
+                    temAsteroidB.vy = vyb * cosine + vxb * sine
+
+
+
+                }
+
+            }
             context.beginPath()
-            context.arc(temAsteroid.x, temAsteroid.y, temAsteroid.radius, 0, Math.PI*2, true)
+            context.arc(temAsteroid.x, temAsteroid.y, temAsteroid.radius, 0, Math.PI * 2, true)
             context.closePath()
             context.fill()
         }
