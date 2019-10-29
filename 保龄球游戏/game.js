@@ -24,6 +24,8 @@ $(function ($) {
     var playerVelocityDampener//缓冲距离转换为弹射力度 存储小行星的速度
     var powerX
     var powerY
+    // 计分
+    var score
 
     // Game UI
     var ui = $("#gameUI");
@@ -55,6 +57,7 @@ $(function ($) {
         uiStats.show();
 
         playGame = false//start game?
+        score = 0
 
         platformX = canvasWidth / 2;
         platformY = 150;
@@ -62,7 +65,6 @@ $(function ($) {
         platformInnerRadius = 75;
 
         asteroids = new Array();
-
 
         playerSelected = false;
         playerMaxAbsVelocity = 30;
@@ -185,11 +187,14 @@ $(function ($) {
                 // 反方向的速度
                 player.vX = -(dx * playerVelocityDampener)
                 player.vY = -(dy * playerVelocityDampener)
+                // 每选择一次玩家小行星就积分一次
+                uiScore.html(++score)
             }
             // 小行星不再被选中 重置小行星的坐标值
             playerSelected = false
             powerX = -1
             powerY = -1
+
         })
 
         animate()
@@ -243,6 +248,8 @@ $(function ($) {
         }
 
         context.fillStyle = "rgb(255,255,255)"
+
+        var deadAsteroids = new Array()//存储从圆台上掉下来的小行星
         var asteroidsLength = asteroids.length
         for (var i = 0; i < asteroidsLength; i++) {
             var tmpAsteroid = asteroids[i]
@@ -317,6 +324,19 @@ $(function ($) {
             };
 
 
+            if (!tmpAsteroid.player) {//不是玩家小行星
+                var dXp = tmpAsteroid.x - platformX
+                var dYp = tmpAsteroid.y - platformY
+                var distanceP = Math.sqrt(dXp * dXp + dYp * dYp)
+                if (distanceP > platformOuterRadius) {//小行星的距离大于圆台半径
+                    if (tmpAsteroid.radius > 0) {
+                        tmpAsteroid.radius -= 2 //让小行星缩小 消失
+                    } else {
+                        deadAsteroids.push(tmpAsteroid)//半径为0时归入到移除的数组内
+                    }
+                }
+            }
+
             //玩家小行星离开画布 或 移动后停止才重置玩家小行星
             if (player.x != playerOriginalX && player.y != playerOriginalY) {
                 console.log('离开')
@@ -350,6 +370,23 @@ $(function ($) {
 
 
         if (playGame) {
+            var deadAsteroidsLength = deadAsteroids.length
+            if( deadAsteroidsLength > 0 ){
+                for(var di = 0; di< deadAsteroidsLength; di++){
+                    var tmpDeadAsteroid = deadAsteroids[di]
+                    asteroids.splice(asteroids.indexOf(tmpDeadAsteroid),1)
+                }
+                var remaining = asteroids.length -1
+                uiRemaining.html(remaining)
+                if(remaining == 0){
+                    playGame = false
+                    uiStats.hide()
+                    uiComplete.show()
+                    $(window).unbind('mousedown')
+                    $(window).unbind('mousemove')
+                    $(window).unbind('mouseup')
+                }
+            }
             setTimeout(animate, 1000 / 60)
         }
     }
