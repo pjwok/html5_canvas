@@ -382,6 +382,7 @@ $(function ($) {
                     playGame = false
                     uiStats.hide()
                     uiComplete.show()
+                    player.radius=0
                     $(window).unbind('mousedown')
                     $(window).unbind('mousemove')
                     $(window).unbind('mouseup')
