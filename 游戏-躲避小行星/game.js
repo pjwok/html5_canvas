@@ -25,7 +25,7 @@ $(function ($) {
         this.width = 24
         this.height = 24
         this.halfWidth = this.width / 2
-        this.haldHeight = this.height / 2
+        this.halfHeight = this.height / 2
 
         this.vx = 0
         this.vy = 0
@@ -123,21 +123,44 @@ $(function ($) {
         context.clearRect(0, 0, canvasWidth, canvasHeight)
 
         //对象运动
-        //遍历小行星
+        //添加小行星运动 遍历小行星
         var asteroidsLength = asteroids.length
-        for(var i = 0; i< asteroidsLength; i++){
+        for (var i = 0; i < asteroidsLength; i++) {
             var tmpAsteroid = asteroids[i]
 
             tmpAsteroid.x += tmpAsteroid.vx
 
             context.fillStyle = 'rgb(255,255,255)'
             context.beginPath()
-            context.arc(tmpAsteroid.x, tmpAsteroid.y, tmpAsteroid.radius, 0, Math.PI*2, true)
+            context.arc(tmpAsteroid.x, tmpAsteroid.y, tmpAsteroid.radius, 0, Math.PI * 2, true)
             context.closePath()
             context.fill()
 
         }
 
+        //添加玩家火箭运动
+        player.vx = 0
+        player.vy = 0
+        if (player.moveRight) {
+            player.vx = 3
+        }
+        if (player.moveUp) {
+            player.vy = -3
+        }
+        if (player.moveDown) {
+            player.vy = 3
+        }
+        player.x += player.vx
+        player.y += player.vy
+
+        //绘制玩家火箭
+        context.fillStyle='rgb(255,0,0)'
+        context.beginPath()
+        context.moveTo(player.x + player.halfWidth, player.y)
+        context.lineTo(player.x - player.halfWidth,player.y - player.halfHeight)
+        context.lineTo(player.x - player.halfWidth,player.y + player.halfHeight)
+        context.closePath()
+        context.fill()
 
 
         if (playGame) {
