@@ -13,7 +13,7 @@ $(function ($) {
     var Asteroid = function (x, y, radius, vx) {
         this.x = x
         this.y = y
-        this.radius = raidus
+        this.radius = radius
         this.vx = vx
     }
 
@@ -29,7 +29,16 @@ $(function ($) {
 
         this.vx = 0
         this.vy = 0
+        //玩家控制时的属性
+        this.moveRight = false
+        this.moveUp = false
+        this.moveDown = false
     }
+
+    //按键检测
+    var arrowUp = 38
+    var arrowRight = 39
+    var arrowDown = 40
 
 
     //game ui
@@ -64,6 +73,29 @@ $(function ($) {
         player = new Player(150, canvasHeight / 2)
 
 
+        //监听键盘事件
+        $(window).on('keydown', function (e) {
+            var keyCode = e.keyCode
+
+            //当按下按键时 游戏未开始 则触发开始游戏
+            if (!playGame) {
+                playGame = true
+                animate()
+            }
+            //玩家火箭对应的方向被触发
+            if (keyCode === arrowRight) {
+                player.moveRight = true
+            } else if (keyCode === arrowUp) {
+                player.moveUp = true
+            } else if (keyCode === arrowDown) {
+                player.moveDown = true
+            }
+
+        })
+        $(window).on('keyup', function (e) {
+
+        })
+
         animate()
     }
 
@@ -80,12 +112,33 @@ $(function ($) {
         uiReset.on('click', function (e) {
             e.preventDefault()
             uiComplete.hide()
+            $(window).unbind('keyup')
+            $(window).unbind('keydown')
             startGame()
+
         })
     }
 
     function animate() {
         context.clearRect(0, 0, canvasWidth, canvasHeight)
+
+        //对象运动
+        //遍历小行星
+        var asteroidsLength = asteroids.length
+        for(var i = 0; i< asteroidsLength; i++){
+            var tmpAsteroid = asteroids[i]
+
+            tmpAsteroid.x += tmpAsteroid.vx
+
+            context.fillStyle = 'rgb(255,255,255)'
+            context.beginPath()
+            context.arc(tmpAsteroid.x, tmpAsteroid.y, tmpAsteroid.radius, 0, Math.PI*2, true)
+            context.closePath()
+            context.fill()
+
+        }
+
+
 
         if (playGame) {
             setTimeout(animate, 1000 / 60)
