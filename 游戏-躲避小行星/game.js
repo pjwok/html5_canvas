@@ -17,6 +17,15 @@ $(function ($) {
         this.vx = vx
     }
 
+    function createAsteroids() {
+        var radius = 5 + Math.random() * 10//小行星半径
+        var x = canvasWidth + radius + Math.floor(Math.random() * canvasWidth)//开始游戏时让小行星出现在屏幕右侧 从右往左运动
+        var y = Math.floor(Math.random() * canvasHeight)
+        var vx = -5 - Math.random() * 5
+
+        asteroids.push(new Asteroid(x, y, radius, vx))
+    }
+
     //玩家
     var player
     var Player = function (x, y) {
@@ -43,6 +52,24 @@ $(function ($) {
     var arrowRight = 39
     var arrowDown = 40
 
+    //计分系统
+    var score
+    var scoreTimeout
+
+    function timer() {
+        if (playGame) {
+            scoreTimeout = setTimeout(function () {
+                console.log(1)
+                uiScore.html(++score)
+                //增加小行星数量
+                if (score % 5 == 0) {
+                    numAsteroids += 5
+                }
+                timer()
+            }, 1000)
+        }
+    }
+
 
     //game ui
     var ui = $('#gameUI')
@@ -52,6 +79,9 @@ $(function ($) {
     var uiPlay = $('#gamePlay')
     var uiReset = $('.gameReset')
     var uiScore = $('.gameScore')
+    var soundBackground = $('#gameSoundBackground').get(0)
+    var soundThrust = $('#gameSoundThrust').get(0)
+    var soundDeath = $('#gameSoundDeath').get(0)
 
     function startGame() {
         uiScore.html('0')
@@ -59,17 +89,14 @@ $(function ($) {
 
         playGame = false
 
+        score = 0
+
         //数组存储小行星
         asteroids = new Array()
         numAsteroids = 10
         //创建小行星
         for (var i = 0; i < numAsteroids; i++) {
-            var radius = 5 + Math.random() * 10//小行星半径
-            var x = canvasWidth + radius + Math.floor(Math.random() * canvasWidth)//开始游戏时让小行星出现在屏幕右侧 从右往左运动
-            var y = Math.floor(Math.random() * canvasHeight)
-            var vx = -5 - Math.random() * 5
-
-            asteroids.push(new Asteroid(x, y, radius, vx))
+            createAsteroids()
         }
 
         //创建玩家火箭
@@ -84,7 +111,10 @@ $(function ($) {
             //当按下按键时 游戏未开始 则触发开始游戏
             if (!playGame) {
                 playGame = true
+                soundBackground.currentTime = 0
+                soundBackground.play()
                 animate()
+                timer()
             }
             //玩家火箭对应的方向被触发
             if (keyCode == arrowRight) {
@@ -100,9 +130,13 @@ $(function ($) {
             player.moveRight = false
             player.moveUp = false
             player.moveDown = false
+            if (!player.moveRight) {
+                soundThrust.pause()
+            }
         })
 
         animate()
+
     }
 
     //init game environment
@@ -120,6 +154,9 @@ $(function ($) {
             uiComplete.hide()
             $(window).unbind('keyup')
             $(window).unbind('keydown')
+            soundBackground.pause()
+            soundThrust.pause()
+            clearTimeout(scoreTimeout)
             startGame()
 
         })
@@ -134,6 +171,28 @@ $(function ($) {
         for (var i = 0; i < asteroidsLength; i++) {
             var tmpAsteroid = asteroids[i]
 
+            //小行星和玩家火箭 碰撞检测
+            var dx = player.x - tmpAsteroid.x
+            var dy = player.y - tmpAsteroid.y
+            var distance = Math.sqrt(dx * dx + dy * dy)
+
+            if (distance < player.halfWidth + tmpAsteroid.radius) {
+                soundThrust.pause()
+                soundBackground.pause()
+
+                soundDeath.currentTime = 0
+                soundDeath.play()
+
+                playGame = false
+                clearTimeout(scoreTimeout)
+                uiStats.hide()
+                uiComplete.show()
+
+                $(window).unbind('keydown')
+                $(window).unbind('keyup')
+
+            }
+
             tmpAsteroid.x += tmpAsteroid.vx
 
             context.fillStyle = 'rgb(255,255,255)'
@@ -142,6 +201,20 @@ $(function ($) {
             context.closePath()
             context.fill()
 
+            //让小行星无线循环
+            if (tmpAsteroid.x + tmpAsteroid.radius <= 0) {
+                tmpAsteroid.radius = 5 + Math.random() * 5
+                tmpAsteroid.x = tmpAsteroid.radius + canvasWidth
+                tmpAsteroid.y = Math.floor(Math.random() * canvasHeight)
+                tmpAsteroid.vx = -5 - Math.random() * 5
+            }
+
+
+        }
+
+        //增加小行星数量
+        while (asteroids.length < numAsteroids) {
+            createAsteroids()
         }
 
         //添加玩家火箭运动
@@ -149,11 +222,28 @@ $(function ($) {
         player.vy = 0
         if (player.moveRight) {
             player.vx = 3
-        } else if (player.moveUp) {
+
+            if (soundThrust.paused) {
+                soundThrust.currentTime = 0
+                soundThrust.play()
+            }
+
+        } else {
+            player.vx = -3
+        }
+        if (player.moveUp) {
             player.vy = -3
-        } else if (player.moveDown) {
+        }
+        if (player.moveDown) {
             player.vy = 3
         }
+        // if (player.moveRight) {
+        //     player.vx = 3
+        // } else if (player.moveUp) {
+        //     player.vy = -3
+        // } else if (player.moveDown) {
+        //     player.vy = 3
+        // }
         player.x += player.vx
         player.y += player.vy
 
@@ -166,12 +256,24 @@ $(function ($) {
         context.closePath()
         context.fill()
 
+        //玩家火箭的边界
+        if (player.x - player.halfWidth < 20) {
+            player.x = 20 + player.halfWidth
+        } else if (player.x + player.halfWidth > canvasWidth - 20) {
+            player.x = canvasWidth - 20 - player.halfWidth
+        }
+
+        if (player.y - player.halfHeight < 20) {
+            player.y = 20 + player.halfHeight
+        } else if (player.y + player.halfHeight > canvasHeight - 20) {
+            player.y = canvasHeight - 20 - player.halfHeight
+        }
         //火箭前进时尾部火焰
         if (player.moveRight) {
             context.save()
             context.translate(player.x - player.halfWidth, player.y)
 
-            player.flameLength == 20 ? 15 : 20
+            player.flameLength === 20 ? 15 : 20
             // if (player.flameLength == 20) {
             //     player.flameLength = 15
             // } else {
@@ -179,11 +281,11 @@ $(function ($) {
             // }
 
             //绘制火焰
-            context.fillStyle='orange'
+            context.fillStyle = 'orange'
             context.beginPath()
-            context.moveTo(0,-5)
+            context.moveTo(0, -5)
             context.lineTo(-player.flameLength, 0)
-            context.lineTo(0,5)
+            context.lineTo(0, 5)
             context.closePath()
             context.fill()
 
