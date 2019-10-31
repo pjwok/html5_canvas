@@ -33,6 +33,9 @@ $(function ($) {
         this.moveRight = false
         this.moveUp = false
         this.moveDown = false
+
+        this.flameLength = 20
+
     }
 
     //按键检测
@@ -76,6 +79,7 @@ $(function ($) {
         //监听键盘事件
         $(window).on('keydown', function (e) {
             var keyCode = e.keyCode
+            console.log(keyCode)
 
             //当按下按键时 游戏未开始 则触发开始游戏
             if (!playGame) {
@@ -83,17 +87,19 @@ $(function ($) {
                 animate()
             }
             //玩家火箭对应的方向被触发
-            if (keyCode === arrowRight) {
+            if (keyCode == arrowRight) {
                 player.moveRight = true
-            } else if (keyCode === arrowUp) {
+            } else if (keyCode == arrowUp) {
                 player.moveUp = true
-            } else if (keyCode === arrowDown) {
+            } else if (keyCode == arrowDown) {
                 player.moveDown = true
             }
 
         })
         $(window).on('keyup', function (e) {
-
+            player.moveRight = false
+            player.moveUp = false
+            player.moveDown = false
         })
 
         animate()
@@ -143,24 +149,46 @@ $(function ($) {
         player.vy = 0
         if (player.moveRight) {
             player.vx = 3
-        }
-        if (player.moveUp) {
+        } else if (player.moveUp) {
             player.vy = -3
-        }
-        if (player.moveDown) {
+        } else if (player.moveDown) {
             player.vy = 3
         }
         player.x += player.vx
         player.y += player.vy
 
         //绘制玩家火箭
-        context.fillStyle='rgb(255,0,0)'
+        context.fillStyle = 'rgb(255,0,0)'
         context.beginPath()
         context.moveTo(player.x + player.halfWidth, player.y)
-        context.lineTo(player.x - player.halfWidth,player.y - player.halfHeight)
-        context.lineTo(player.x - player.halfWidth,player.y + player.halfHeight)
+        context.lineTo(player.x - player.halfWidth, player.y - player.halfHeight)
+        context.lineTo(player.x - player.halfWidth, player.y + player.halfHeight)
         context.closePath()
         context.fill()
+
+        //火箭前进时尾部火焰
+        if (player.moveRight) {
+            context.save()
+            context.translate(player.x - player.halfWidth, player.y)
+
+            player.flameLength == 20 ? 15 : 20
+            // if (player.flameLength == 20) {
+            //     player.flameLength = 15
+            // } else {
+            //     player.flameLength = 20
+            // }
+
+            //绘制火焰
+            context.fillStyle='orange'
+            context.beginPath()
+            context.moveTo(0,-5)
+            context.lineTo(-player.flameLength, 0)
+            context.lineTo(0,5)
+            context.closePath()
+            context.fill()
+
+            context.restore()
+        }
 
 
         if (playGame) {
