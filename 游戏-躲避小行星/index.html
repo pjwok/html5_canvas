@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.bootcss.com/jquery/3.4.0/jquery.js"></script>
+  <script src="game.js"></script>
+</head>
+<body>
+  <div id="game">
+    <div id="gameUI">
+      <div id="gameIntro">
+        <h1>Asteroid avoidance</h1>
+        <p>Click play and then press any key to start.</p>
+        <p><a id="gamePlay" class="button" href="">Play</a></p>
+      </div>
+      <div id="gameState">
+        <p>Time: <span class="gameScore"></span> seconds.</p>
+        <p><a href="" class="gameReset">Reset</a></p>
+      </div>
+      <div id="gameComplete">
+        <h1>Game Over!</h1>
+        <p>You survived for <span class="gameScore"></span> seconds.</p>
+        <p><a href="" class="gameReset button">Play again</a></p>
+      </div>
+    </div>
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    <audio id="gameSoundBackground" loop>
+      <source src="sounds/background.mp3">
+      <source src="sounds/background.ogg">
+    </audio>
+    <audio id="gameSoundThrust" loop>
+      <source src="sounds/thrust.mp3">
+      <source src="sounds/thrust.ogg">
+    </audio>
+    <audio id="gameSoundDeath" loop>
+      <source src="sounds/death.mp3">
+      <source src="sounds/death.ogg">
+    </audio>
+  </div>
+</body>
+</html>
