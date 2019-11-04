@@ -1,5 +1,15 @@
 $(function () {
 
+    //创建GUI
+    var controls = new function () {
+        this.rotationSpeed = 0.02
+        this.bouncingSpeed = 0.03
+    }
+
+    var gui = new dat.GUI()
+    gui.add(controls, 'rotationSpeed', 0, 0.5)
+    gui.add(controls, 'bouncingSpeed', 0, 0.5)
+
     // 初始化统计对象
     function initStats() {
         var stats = new Stats()
@@ -102,15 +112,16 @@ $(function () {
 
     //控制动画
     var step = 0
+
     function renderAnimation() {
-        cube.rotation.x += 0.02
-        cube.rotation.y += 0.02
-        cube.rotation.z += 0.02
+        cube.rotation.x += controls.rotationSpeed
+        cube.rotation.y += controls.rotationSpeed
+        cube.rotation.z += controls.rotationSpeed
 
         //圆球的曲线运动
-        step += 0.04//弹跳的高度
-        sphere.position.x = 20 + Math.cos(step)* 10
-        sphere.position.y = 2 + Math.abs(Math.sin(step))* 10
+        step += controls.bouncingSpeed//弹跳的速度
+        sphere.position.x = 20 + Math.cos(step) * 10
+        sphere.position.y = 2 + Math.abs(Math.sin(step)) * 10
 
     }
 
