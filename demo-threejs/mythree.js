@@ -1,11 +1,26 @@
 $(function () {
+
+    // 初始化统计对象
+    function initStats() {
+        var stats = new Stats()
+        stats.setMode(0)//0-FPS 1-渲染时间
+        stats.domElement.style.position = 'absolute'
+        stats.domElement.style.left = '0'
+        stats.domElement.style.top = '0'
+        $('#stats-output').append(stats.domElement)
+        return stats
+    }
+
+    var stats = initStats()
+
+    //创建场景
     var scene = new THREE.Scene()
 
     var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
 
     var renderer = new THREE.WebGLRenderer()
     // renderer.setClearColorHex(0xEEEEEE)//老版本
-    renderer.setClearColor(0xefefef, 1);
+    renderer.setClearColor(0xefefef, 1)
     renderer.setSize(window.innerWidth, window.innerHeight)
     renderer.shadowMap.enabled = true
 
@@ -70,7 +85,7 @@ $(function () {
 
     //添加光源
     var spotLight = new THREE.SpotLight(0xffffff)
-    spotLight.position.set(-40,60,-10)
+    spotLight.position.set(-40, 60, -10)
 
     //投射阴影
     spotLight.castShadow = true
@@ -83,7 +98,34 @@ $(function () {
     camera.position.z = 30
     camera.lookAt(scene.position)
 
+    //让画面动起来
+
+    //控制动画
+    var step = 0
+    function renderAnimation() {
+        cube.rotation.x += 0.02
+        cube.rotation.y += 0.02
+        cube.rotation.z += 0.02
+
+        //圆球的曲线运动
+        step += 0.04//弹跳的高度
+        sphere.position.x = 20 + Math.cos(step)* 10
+        sphere.position.y = 2 + Math.abs(Math.sin(step))* 10
+
+    }
+
+    //渲染动画
+    function renderScene() {
+        stats.update()
+
+        renderAnimation()
+
+        requestAnimationFrame(renderScene)
+        renderer.render(scene, camera)
+    }
+
     $('#webgl-output').append(renderer.domElement)
-    renderer.render(scene, camera)
+    renderScene()
+
 
 })
