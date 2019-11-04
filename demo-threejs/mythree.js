@@ -125,6 +125,12 @@ $(function () {
 
     }
 
+
+    // $('#webgl-output').append(renderer.domElement)
+    var effect = new THREE.AsciiEffect(renderer)
+    effect.setSize(window.innerWidth, window.innerHeight)
+    $('#webgl-output').append(effect.domElement)
+
     //渲染动画
     function renderScene() {
         stats.update()
@@ -132,10 +138,10 @@ $(function () {
         renderAnimation()
 
         requestAnimationFrame(renderScene)
-        renderer.render(scene, camera)
+        effect.render(scene, camera)
     }
 
-    $('#webgl-output').append(renderer.domElement)
+
     renderScene()
 
 
