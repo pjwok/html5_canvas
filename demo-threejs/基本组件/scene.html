@@ -40,6 +40,13 @@
 
         //开启场景中的雾化效果
         // scene.fog = new THREE.FogExp2(0xffffff, 0.02)
+
+        //通过材质覆盖
+        // scene.overrideMaterial = new THREE.MeshLambertMaterial({
+        //     color: 0x00ff00,
+        //     wireframe: true
+        // })
+
         // create a camera, which defines where we're looking at.
         var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
         scene.add(camera);
@@ -93,6 +100,7 @@
             this.numberOfObjects = scene.children.length;
 
             // 移除最后一个方块
+            //定位带最后一个方块 判断是不是Mesh对象 如果是则remove 更新数组长度
             this.removeCube = function () {
                 var allChildren = scene.children;
                 var lastObject = allChildren[allChildren.length - 1];
