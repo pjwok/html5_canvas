@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <title>Example 04.04 - Mesh normal material</title>
+  <script type="text/javascript" src="../libs/three.js"></script>
+
+  <script type="text/javascript" src="../libs/stats.js"></script>
+  <script type="text/javascript" src="../libs/dat.gui.js"></script>
+  <script type="text/javascript" src="../libs/CanvasRenderer.js"></script>
+  <script type="text/javascript" src="../libs/Projector.js"></script>
+
+  <style>
+    body {
+      /* set margin to 0 and overflow to hidden, to go fullscreen */
+      margin: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+
+<div id="Stats-output">
+</div>
+<!-- Div which will hold the Output -->
+<div id="webgl">
+</div>
+
+<!-- Javascript code that runs our Three.js examples -->
+<script type="text/javascript">
+
+    // once everything is loaded, we run our Three.js stuff.
+    function init() {
+
+        var scene = new THREE.Scene()
+
+        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000)
+        camera.position.set(-20, 30, 40)
+        camera.lookAt(new THREE.Vector3(10, 0, 0))
+
+        var webGLRenderer = new THREE.WebGLRenderer()
+        webGLRenderer.setClearColor(new THREE.Color(0xEEEEEE, 1.0))
+        webGLRenderer.setSize(window.innerWidth, window.innerHeight)
+        webGLRenderer.shadowMapEnabled = true
+
+        var canvasRenderer = new THREE.CanvasRenderer()
+        canvasRenderer.setSize(window.innerWidth, window.innerHeight)
+        var renderer = webGLRenderer
+
+        var meshMaterial = new THREE.MeshNormalMaterial({color:0x7777ff,shading: THREE.FlatShading})
+        var sphereGeometry = new THREE.SphereGeometry(14,20,20)
+        var sphere = new THREE.Mesh(sphereGeometry, meshMaterial)
+        sphere.position.set(0,3,3)
+        scene.add(sphere)
+        console.log(sphere)
+
+// add subtle ambient lighting
+        var ambientLight = new THREE.AmbientLight(0x0c0c0c);
+        scene.add(ambientLight);
+
+        // add spotlight for the shadows
+        var spotLight = new THREE.SpotLight(0xffffff);
+        spotLight.position.set(-40, 60, -10);
+        spotLight.castShadow = true;
+        scene.add(spotLight);
+
+        for(var i = 0; i< sphere.geometry.faces.length;i++){
+            var face = sphere.geometry.faces[i]
+            var centoid = new THREE.Vector3(0,0,0)
+            centoid.add(sphere.geometry.vertices[face.a])
+            centoid.add(sphere.geometry.vertices[face.b])
+            centoid.add(sphere.geometry.vertices[face.c])
+            centoid.divideScalar(3)
+
+            var arrow = new THREE.ArrowHelper(
+                face.normal,//原点开始的地方
+                centoid,//箭头的起点
+                2,//length
+                0x3333ff,
+                0.5,//head of the arrow
+                0.5 //width of the arrow
+            )
+            sphere.add(arrow)
+        }
+
+        document.getElementById("webgl").appendChild(renderer.domElement);
+
+        render();
+
+        function render() {
+
+            // render using requestAnimationFrame
+            requestAnimationFrame(render);
+            renderer.render(scene, camera);
+        }
+
+    }
+
+    window.onload = init
+
+
+</script>
+</body>
+</html>
